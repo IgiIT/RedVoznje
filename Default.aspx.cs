@@ -24,7 +24,7 @@ namespace RedVoznje
         }
         public bool rezervisano(int sediste)
         {
-            foreach(int broj in rezervisana)
+            foreach (int broj in rezervisana)
             {
                 if (broj == sediste)
                 {
@@ -56,7 +56,7 @@ namespace RedVoznje
                     reader.Close();
                     con.Close();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex);
                 }
@@ -64,35 +64,36 @@ namespace RedVoznje
         }
         private void kreirajMesta()
         {
-            for(int i = MIN_SEDISTA; i <= MAX_SEDISTA; ++i)
+            for (int i = MIN_SEDISTA; i <= MAX_SEDISTA; ++i)
             {
                 Button mesto = new Button();
                 mesto.Text = i + "";
                 mesta.Add(mesto);
             }
         }
-        private void izaberiMesto(object o ,EventArgs e)
+        private void izaberiMesto(object o, EventArgs e)
         {
             Button b = (Button)o;
             txtSediste.Text = b.Text;
         }
-        public void kreirajTabelu()
+        private void kreirajTabelu()
         {
             int mesto = 0;
-            for(int i = 0; i < 13; ++i)
+            for (int i = 0; i < 13; i++)
             {
                 TableRow red = new TableRow();
                 red.Height = 20;
-                for(int j = 0; j < 5; ++j)
+                for (int j = 0; j < 5; j++)
                 {
-                    TableCell celija = new TableCell();
-                    celija.HorizontalAlign = HorizontalAlign.Center;
+                    TableCell celije = new TableCell();
+                    celije.HorizontalAlign = HorizontalAlign.Center;
+
                     if (i == 0)
                     {
                         if (j == 2)
                         {
-                            celija.RowSpan = 13;
-                            celija.Width = 30;
+                            celije.RowSpan = 13;
+                            celije.Width = 30;
                         }
                         else
                         {
@@ -106,9 +107,10 @@ namespace RedVoznje
                             {
                                 mesta.ElementAt(mesto).BackColor = Color.Green;
                             }
-                            celija.Controls.Add(mesta.ElementAt(mesto));
-                            celija.ForeColor = Color.Black;
-                            celija.BackColor = Color.LightBlue;
+
+                            celije.Controls.Add(mesta.ElementAt(mesto));
+                            celije.ForeColor = Color.Black;
+                            celije.BackColor = Color.LightBlue;
                             mesto++;
                         }
                     }
@@ -128,29 +130,28 @@ namespace RedVoznje
                             else
                             {
                                 mesta.ElementAt(mesto).BackColor = Color.Green;
+
                             }
                             mesta.ElementAt(mesto).Click += new EventHandler(izaberiMesto);
-                            celija.Controls.Add(mesta.ElementAt(mesto));
-                            celija.ForeColor = Color.Black;
-                            celija.BackColor = Color.LightBlue;
+                            celije.Controls.Add(mesta.ElementAt(mesto));
+                            celije.ForeColor = Color.Black;
+                            celije.BackColor = Color.LightBlue;
                             if (mesto < 51)
-                            {
                                 mesto++;
-                            }
                         }
-                        red.Cells.Add(celija);
                     }
-                    red.BorderWidth = 1;
-                    red.BorderStyle = BorderStyle.Solid;
-                    red.BorderColor = Color.Black;
-                    tabela.Rows.Add(red);
+                    red.Cells.Add(celije);
                 }
+                red.BorderWidth = 1;
+                red.BorderStyle = BorderStyle.Solid;
+                red.BorderColor = Color.Black;
+                tabela.Rows.Add(red);
             }
         }
         protected void btn_Click(object sender, EventArgs e)
         {
             string insert;
-            insert = "INSERT INTO sedista(id,brojSedista,ime_prezime,email)";
+            insert = "Insert into sedista (id, brojSedista, ime_prezime, email)";
             insert += "VALUES ('";
             insert += txtSediste.Text + "','";
             insert += txtSediste.Text + "','";
@@ -160,6 +161,7 @@ namespace RedVoznje
             SqlConnection con = new SqlConnection(conStr);
             SqlCommand cmd = new SqlCommand(insert, con);
             int dodat = 0;
+
             using (con)
             {
                 try
@@ -167,8 +169,7 @@ namespace RedVoznje
                     con.Open();
                     dodat = cmd.ExecuteNonQuery();
                     rezervisana.Add(Int32.Parse(txtSediste.Text));
-
-                    foreach(Button b in mesta)
+                    foreach (Button b in mesta)
                     {
                         if (b.Text == txtSediste.Text)
                         {
@@ -180,7 +181,7 @@ namespace RedVoznje
                     txtSediste.Text = "";
 
                 }
-                catch(Exception ex)
+                catch (SqlException ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
