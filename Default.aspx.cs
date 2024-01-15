@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -61,8 +62,129 @@ namespace RedVoznje
                 }
             }
         }
+        private void kreirajMesta()
+        {
+            for(int i = MIN_SEDISTA; i <= MAX_SEDISTA; ++i)
+            {
+                Button mesto = new Button();
+                mesto.Text = i + "";
+                mesta.Add(mesto);
+            }
+        }
+        private void izaberiMesto(object o ,EventArgs e)
+        {
+            Button b = (Button)o;
+            txtSediste.Text = b.Text;
+        }
+        public void kreirajTabelu()
+        {
+            int mesto = 0;
+            for(int i = 0; i < 13; ++i)
+            {
+                TableRow red = new TableRow();
+                red.Height = 20;
+                for(int j = 0; j < 5; ++j)
+                {
+                    TableCell celija = new TableCell();
+                    celija.HorizontalAlign = HorizontalAlign.Center;
+                    if (i == 0)
+                    {
+                        if (j == 2)
+                        {
+                            celija.RowSpan = 13;
+                            celija.Width = 30;
+                        }
+                        else
+                        {
+                            mesta.ElementAt(mesto).Click += new EventHandler(izaberiMesto);
+                            if (rezervisano(Int32.Parse(mesta.ElementAt(mesto).Text)))
+                            {
+                                mesta.ElementAt(mesto).BackColor = Color.Red;
+                                mesta.ElementAt(mesto).Enabled = false;
+                            }
+                            else
+                            {
+                                mesta.ElementAt(mesto).BackColor = Color.Green;
+                            }
+                            celija.Controls.Add(mesta.ElementAt(mesto));
+                            celija.ForeColor = Color.Black;
+                            celija.BackColor = Color.LightBlue;
+                            mesto++;
+                        }
+                    }
+                    else
+                    {
+                        if (j == 2)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            if (rezervisano(Int32.Parse(mesta.ElementAt(mesto).Text)))
+                            {
+                                mesta.ElementAt(mesto).BackColor = Color.Red;
+                                mesta.ElementAt(mesto).Enabled = false;
+                            }
+                            else
+                            {
+                                mesta.ElementAt(mesto).BackColor = Color.Green;
+                            }
+                            mesta.ElementAt(mesto).Click += new EventHandler(izaberiMesto);
+                            celija.Controls.Add(mesta.ElementAt(mesto));
+                            celija.ForeColor = Color.Black;
+                            celija.BackColor = Color.LightBlue;
+                            if (mesto < 51)
+                            {
+                                mesto++;
+                            }
+                        }
+                        red.Cells.Add(celija);
+                    }
+                    red.BorderWidth = 1;
+                    red.BorderStyle = BorderStyle.Solid;
+                    red.BorderColor = Color.Black;
+                    tabela.Rows.Add(red);
+                }
+            }
+        }
         protected void btn_Click(object sender, EventArgs e)
         {
+            string insert;
+            insert = "INSERT INTO sedista(id,brojSedista,ime_prezime,email)";
+            insert += "VALUES ('";
+            insert += txtSediste.Text + "','";
+            insert += txtSediste.Text + "','";
+            insert += txtImePrezime.Text + "','";
+            insert += txtEmail.Text + "')";
+
+            SqlConnection con = new SqlConnection(conStr);
+            SqlCommand cmd = new SqlCommand(insert, con);
+            int dodat = 0;
+            using (con)
+            {
+                try
+                {
+                    con.Open();
+                    dodat = cmd.ExecuteNonQuery();
+                    rezervisana.Add(Int32.Parse(txtSediste.Text));
+
+                    foreach(Button b in mesta)
+                    {
+                        if (b.Text == txtSediste.Text)
+                        {
+                            b.BackColor = Color.Red;
+                            b.Enabled = false;
+                        }
+                    }
+                    con.Close();
+                    txtSediste.Text = "";
+
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
 
         }
     }

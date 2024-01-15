@@ -4,7 +4,7 @@
 
     <h1>Prikaz sedista autobusa:</h1>
     <br />
-    <asp:Table ID="Table1" runat="server" BorderColor="Black" BorderStyle="Solid" BorderWidth="1px" GridLines="Both" Width="199px"></asp:Table>
+    <asp:Table ID="tabela" runat="server" BorderColor="Black" BorderStyle="Solid" BorderWidth="1px" GridLines="Both" Width="199px"></asp:Table>
     <br />
     <table style="width: 50%;">
         <tr>
