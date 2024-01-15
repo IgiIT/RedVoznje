@@ -19,8 +19,8 @@ namespace RedVoznje
         protected void Page_Load(object sender, EventArgs e)
         {
             iscitaj();
-            //kreirajMesta();
-            //kreirajTabelu();
+            kreirajMesta();
+            kreirajTabelu();
         }
         public bool rezervisano(int sediste)
         {
